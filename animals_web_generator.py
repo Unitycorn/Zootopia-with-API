@@ -77,16 +77,22 @@ def main():
     # animals_data = load_data('animals_data.json')
     user_choice = input("Please enter an animal name: ").capitalize()
     animals_data = requests.get(REQUEST_URL + user_choice, headers={"X-Api-Key": API_KEY}).json()
-    serialized_data = ''
-    skin_types = []
-    for animal in animals_data:
-        if ('skin_type' in animal['characteristics'].keys()
-                and animal['characteristics']['skin_type'] not in skin_types):
-            skin_types.append(animal['characteristics']['skin_type'])
-    selection = get_user_selection(skin_types)
-    for animal in animals_data:
-        if selection == 'All' or animal['characteristics']['skin_type'] == selection:
-            serialized_data += serialize_animal(animal)
+    if animals_data:
+        serialized_data = ''
+        skin_types = []
+        for animal in animals_data:
+            if ('skin_type' in animal['characteristics'].keys()
+                    and animal['characteristics']['skin_type'] not in skin_types):
+                skin_types.append(animal['characteristics']['skin_type'])
+        selection = get_user_selection(skin_types)
+        for animal in animals_data:
+            if selection == 'All' or animal['characteristics']['skin_type'] == selection:
+                serialized_data += serialize_animal(animal)
+    else:
+        serialized_data = f"""
+            <li class='cards__item'>\n
+            <div class='card__title'>The animal {user_choice} doesn't exist!</div>\n
+            </li>\n"""
     altered_html_content = load_html_template(HTML_TEMPLATE_FILE).replace(REPLACE_STRING, serialized_data)
     write_html_file(altered_html_content, NEW_HML_FILE)
     print("File: " + NEW_HML_FILE + " saved!")
