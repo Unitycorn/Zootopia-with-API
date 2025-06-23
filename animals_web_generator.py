@@ -40,11 +40,24 @@ def serialize_animal(animal_obj):
     return output
 
 
+def get_available_skin_types(animal_data):
+    """Returns a unique list of available skin types"""
+    skin_types = []
+    for animal in animal_data:
+        if ('skin_type' in animal['characteristics'].keys()
+                and animal['characteristics']['skin_type'] not in skin_types):
+            skin_types.append(animal['characteristics']['skin_type'])
+    return skin_types
+
+
 def write_html_file(content, path):
     """ Writes an HTML file """
-    with open(path, 'w') as file:
-        file.write(content)
-    file.close()
+    try:
+        with open(path, 'w') as file:
+            file.write(content)
+        file.close()
+    except OSError:
+        print("File could not be opened")
 
 
 def get_user_selection(types):
@@ -68,15 +81,12 @@ def main():
     animals_data = data_fetcher.fetch_data(user_choice)
     if animals_data:
         serialized_data = ''
-        skin_types = []
-        for animal in animals_data:
-            if ('skin_type' in animal['characteristics'].keys()
-                    and animal['characteristics']['skin_type'] not in skin_types):
-                skin_types.append(animal['characteristics']['skin_type'])
+        skin_types = get_available_skin_types(animals_data)
         selection = get_user_selection(skin_types)
         for animal in animals_data:
-            if selection == 'All' or animal['characteristics']['skin_type'] == selection:
-                serialized_data += serialize_animal(animal)
+            if 'skin_type' in animal['characteristics'].keys():  # we ignore animals with no skin_type in the dataset
+                if selection == 'All' or animal['characteristics']['skin_type'] == selection:
+                    serialized_data += serialize_animal(animal)
     else:
         serialized_data = f"""
             <li class='cards__item'>\n
