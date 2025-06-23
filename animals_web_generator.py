@@ -1,4 +1,9 @@
 import json
+import requests
+
+REQUEST_URL = "https://api.api-ninjas.com/v1/animals?name="
+SEARCH_TERM = "Fox"
+API_KEY = "gf743J9I+YtnTkhjgvudxA==C7see5DHXn9hgBcH"
 
 HTML_TEMPLATE_FILE = 'animals_template.html'
 NEW_HML_FILE = 'animals.html'
@@ -66,11 +71,12 @@ def get_user_selection(types):
 
 def main():
     """
-    1. Loads data from JSON file and serializes the objects within into an HTML-string
+    1. Loads data from API and serializes the objects within into an HTML-string
     2. Gets HTML from template and replaces specified part with HTML-string
     3. Writes new HTML into file
     """
-    animals_data = load_data('animals_data.json')
+    # animals_data = load_data('animals_data.json')
+    animals_data = requests.get(REQUEST_URL + SEARCH_TERM, headers={"X-Api-Key": API_KEY}).json()
     serialized_data = ''
     skin_types = []
     for animal in animals_data:
