@@ -1,8 +1,12 @@
+from dotenv import load_dotenv
 import requests
 import json
+import os
+
+load_dotenv()
 
 REQUEST_URL = "https://api.api-ninjas.com/v1/animals?name="
-API_KEY = "gf743J9I+YtnTkhjgvudxA==C7see5DHXn9hgBcH"
+API_KEY = os.getenv('API_KEY')
 
 
 def load_data(file_path):
