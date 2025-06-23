@@ -1,18 +1,8 @@
-import json
-import requests
-
-REQUEST_URL = "https://api.api-ninjas.com/v1/animals?name="
-API_KEY = "gf743J9I+YtnTkhjgvudxA==C7see5DHXn9hgBcH"
+import data_fetcher
 
 HTML_TEMPLATE_FILE = 'animals_template.html'
 NEW_HML_FILE = 'animals.html'
 REPLACE_STRING = "__REPLACE_ANIMALS_INFO__"
-
-
-def load_data(file_path):
-    """ Loads a JSON file """
-    with open(file_path, "r") as handle:
-        return json.load(handle)
 
 
 def load_html_template(template):
@@ -74,9 +64,8 @@ def main():
     2. Gets HTML from template and replaces specified part with HTML-string
     3. Writes new HTML into file
     """
-    # animals_data = load_data('animals_data.json')
     user_choice = input("Please enter an animal name: ").capitalize()
-    animals_data = requests.get(REQUEST_URL + user_choice, headers={"X-Api-Key": API_KEY}).json()
+    animals_data = data_fetcher.fetch_data(user_choice)
     if animals_data:
         serialized_data = ''
         skin_types = []
